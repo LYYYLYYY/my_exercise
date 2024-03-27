@@ -4,7 +4,7 @@ import torch
 from torch.autograd import Variable
 import torch.optim as optim
 
-import rnn
+import rnn  as rnn_lstm
 
 start_token = 'G'
 end_token = 'E'
@@ -123,6 +123,7 @@ def run_training():
     # 处理数据集
     # poems_vector, word_to_int, vocabularies = process_poems2('./tangshi.txt')
     poems_vector, word_to_int, vocabularies = process_poems1('./poems.txt')
+    print(vocabularies)
     # 生成batch
     print("finish  loadding data")
     BATCH_SIZE = 100
@@ -137,7 +138,7 @@ def run_training():
     loss_fun = torch.nn.NLLLoss()
     # rnn_model.load_state_dict(torch.load('./poem_generator_rnn'))  # if you have already trained your model you can load it by this line.
 
-    for epoch in range(30):
+    for epoch in range(1):
         batches_inputs, batches_outputs = generate_batch(BATCH_SIZE, poems_vector, word_to_int)
         n_chunk = len(batches_inputs)
         for batch in range(n_chunk):
@@ -210,8 +211,8 @@ def gen_poem(begin_word):
         output = rnn_model(input, is_test=True)
         word = to_word(output.data.tolist()[-1], vocabularies)
         poem += word
-        # print(word)
-        # print(poem)
+        print(word)
+        print(poem)
         if len(poem) > 30:
             break
     return poem
@@ -229,5 +230,3 @@ pretty_print_poem(gen_poem("湖"))
 pretty_print_poem(gen_poem("湖"))
 pretty_print_poem(gen_poem("湖"))
 pretty_print_poem(gen_poem("君"))
-
-
